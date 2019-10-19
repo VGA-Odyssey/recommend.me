@@ -43,7 +43,8 @@ def log_error(e):
     print(e)
 
 
-
+def my_decode(a):
+    return [x for x in a]
 
 
 
@@ -63,7 +64,7 @@ html = BeautifulSoup(raw_html, 'html.parser')
 clubs = []
 
 print("Extracting group titles and website links...")
-for a in html.select('h4 > a'):
+for a in html.select('li > div > div > div > div > h4 > a'):
     try:
         title = a.text.strip()
         url = a['href'].strip()
@@ -74,25 +75,50 @@ for a in html.select('h4 > a'):
 
 print("Extracting group descriptions...")
 i = 0
-for p in html.select('p'):
+for p in html.select('li > div > div > div > div > div'):
     try:
-        if p['id'][0:5] == 'club_':
+        #print(my_decode(p.children))
+        for child in p.children:
+            try:
+                if child['id'][0:5] == "club_":
+                    if child['id'][0:6] == "club_w":
+                        None
+                        #benefits = child.text[19:]
+                        #clubs[i]['benefits'] = benefits
+                        #print("what", ">"+benefits+"<")
+                    else:
+                        desc = p.text.strip()
+                        desc = desc.split('\r\n\t\t\t\t\t\t\t\t', 1)
+                        desc.append("")
+                        desc.append("")
+                        desc = desc[1]
+                        desc = ' '.join(desc.split('\r\n\t\t\t\t\t\t\t\nMembership Benefits', 1))
+                        clubs[i]['desc'] = desc
+                        #print("club", child['id'], child['id'][5:])
+                        club_id = child['id'][5:]
+                        clubs[i]['id'] = club_id
+            except (AttributeError, KeyError, TypeError):
+                None
+        i += 1
+        #break
+        #if p['id'][0:5] == 'club_':
             #print(p)
-            desc = p.text.strip()
-            desc = desc.split('\r\n\t\t\t\t\t\t\t\t', 1)
-            desc.append("")
-            desc.append("")
-            desc = desc[1]
-            #print(len(clubs), i)
-            clubs[i]['desc'] = desc
             #break
-            i += 1
+            #desc = p.text.strip()
+            #desc = desc.split('\r\n\t\t\t\t\t\t\t\t', 1)
+            #desc.append("")
+            #desc.append("")
+            #desc = desc[1]
+            ##print(len(clubs), i)
+            #clubs[i]['desc'] = desc
+            ##break
+            #i += 1
     except (KeyError, IndexError):
         None
 
 print("Extracting group images...")
 i = 0
-for img in html.select('div > a > img'):
+for img in html.select('li > div > div > div > div > a > img'):
     try:
         img = "https://mason360.gmu.edu"+img.attrs['src']
         clubs[i]['img'] = img
@@ -102,4 +128,4 @@ for img in html.select('div > a > img'):
         None
 
 with open(output_file, 'w') as f:
-    json.dump(clubs, f)
+    json.dump(clubs, f, indent=4)
