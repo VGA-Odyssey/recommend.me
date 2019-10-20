@@ -4,6 +4,7 @@ const clubs = require('../public/json/clubs.json');
 const key = require('../public/json/key');
 
 const client = new recombee.ApiClient(key.db, key.key);
+const NUM = 100;
 
 client.send(new rqs.Batch([
     new rqs.AddItemProperty('title', 'string'),
@@ -31,12 +32,19 @@ client.send(new rqs.Batch([
     return client.send(new rqs.Batch(requests));
 })
 .then(responses => {
-    const probability_visited = 0.1;
+    const probability_visited = 0.85;
     visits = [];
-    let visited = clubs.filter(() => Math.random() < probability_visited);
+    
+    let userIds = Array.apply(0, Array(NUM)).map((_, i) => {
+        return `${i}`;
+      });
+
+      userIds.forEach((userId) => {
+        let visited = clubs.filter(() => Math.random() < probability_visited);
     visited.forEach(club => {
         visits.push(new rqs.AddPurchase(1, club.id, {'cascadeCreate': true}))
     });
+})
 
     return client.send(new rqs.Batch(visits));
 })

@@ -4,8 +4,11 @@ import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl';
 import Button from 'react-bootstrap/Button';
 import Toast from 'react-bootstrap/Toast';
+import Card from 'react-bootstrap/Card';
+import CardColumns from 'react-bootstrap/CardColumns';
 import axios from 'axios';
 import './css/interests.css';
+const uuid = require('uuid');
 
 export class Interests extends Component {
 
@@ -16,6 +19,8 @@ export class Interests extends Component {
             value: '',
             skills: [],
             btnClick: false,
+            club: {},
+            clubData: [],
         };
     }
 
@@ -23,7 +28,8 @@ export class Interests extends Component {
         axios.get('http://localhost:4000/api/clubs/')
         .then(res => {
             const clubs = res.data;
-            console.log(clubs);
+            const elem = clubs[Number.parseInt(Math.random() * clubs.length)];
+            this.setState({club: elem});
         })
     }
 
@@ -50,6 +56,26 @@ export class Interests extends Component {
         }
     }
 
+    prediction = () => {
+        axios.get(`http://localhost:4000/api/predict/${this.state.club.id}`)
+        .then(res => {
+            const prediction = res.data;
+            prediction.recomms.map(predictions => {
+                axios.get(`http://localhost:4000/api/clubs/${predictions.id}`)
+                .then(resp => {
+                    this.setState({clubData: [...this.state.clubData, resp.data]});
+
+                    axios.get('http://localhost:4000/api/clubs/')
+                    .then(res => {
+                        const clubs = res.data;
+                        const elem = clubs[Number.parseInt(Math.random() * clubs.length)];
+                        this.setState({club: elem});
+                    })
+                })
+            })
+        })
+    }
+
 
     render() {
         return (
@@ -74,7 +100,7 @@ export class Interests extends Component {
                 </InputGroup>
                 
                 {this.state.skills.map(skill => (
-                    <Toast onClose={() => {this.onClose(skill)}}>
+                    <Toast key={uuid.v4()} onClose={() => {this.onClose(skill)}}>
                         <Toast.Header>
                             <strong className="mr-auto">Interest</strong>
                         </Toast.Header>
@@ -84,7 +110,26 @@ export class Interests extends Component {
                     </Toast>
                 ))}
 
-                <Button variant={'secondary'} size={'lg'} className={'recom'} style={this.buttonHide()} block>See Recommendations</Button>
+                <Button variant={'secondary'} size={'lg'} className={'recom'} style={this.buttonHide()} onClick={() => {this.prediction()}} block>See Recommendations</Button>
+                
+                <CardColumns>
+                    {this.state.clubData.map(club => (
+                        <Card key={uuid.v4()} style={{width: '15em'}}>
+                            <Card.Img variant={'top'} src={club.img} />
+                            <Card.Body>
+                                <Card.Title>{club.title}</Card.Title>
+                                <Card.Text>{club.desc || 'No Description Available'}</Card.Text>
+                            </Card.Body>
+                            <Card.Footer>
+                                <a href={club.url}>
+                                    <Button variant={'outline-secondary'}>
+                                        Website
+                                    </Button>
+                                </a>
+                            </Card.Footer>
+                        </Card>
+                    ))}
+                </CardColumns>
 
             </Container>
         )
