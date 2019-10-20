@@ -36,7 +36,7 @@ export class Interests extends Component {
     onClick = (e) => {
         if(this.state.value !== ''){
          this.setState({skills: [...this.state.skills, this.state.value]},
-                this.setState({value: '', btnClick: true})
+                this.setState({value: '', btnClick: true, clubData:[]})
             )
          }
     }
@@ -81,15 +81,15 @@ export class Interests extends Component {
         return (
             <Container>
                 <div className={'welcome-text'}>
-                    <h1>
+                    <h1 style={{marginTop: '20px'}}>
                         Find Your Perfect Club Today
                     </h1>
-                    <h2>
+                    <h2 style={{marginBottom: '20px'}}>
                         Enter your interests
                     </h2>
                 </div>
 
-                <InputGroup>
+                <InputGroup className={'d-flex'} style={{marginBottom: '20px'}}> 
                     <InputGroup.Prepend>
                         <InputGroup.Text>Enter an Interest</InputGroup.Text>
                     </InputGroup.Prepend>
@@ -112,16 +112,16 @@ export class Interests extends Component {
 
                 <Button variant={'secondary'} size={'lg'} className={'recom'} style={this.buttonHide()} onClick={() => {this.prediction()}} block>See Recommendations</Button>
                 
-                <CardColumns>
+                <CardColumns style={{marginTop: '20px'}}>
                     {this.state.clubData.map(club => (
-                        <Card key={uuid.v4()} style={{width: '15em'}}>
+                        <Card key={uuid.v4()} style={{width: '15em', borderRadius: '25px;'}}>
                             <Card.Img variant={'top'} src={club.img} />
                             <Card.Body>
                                 <Card.Title>{club.title}</Card.Title>
                                 <Card.Text>{club.desc || 'No Description Available'}</Card.Text>
                             </Card.Body>
                             <Card.Footer>
-                                <a href={club.url}>
+                                <a href={club.url} target={'_blank'}> 
                                     <Button variant={'outline-secondary'}>
                                         Website
                                     </Button>

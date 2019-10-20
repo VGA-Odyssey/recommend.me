@@ -8,16 +8,15 @@ function Header() {
     return (
        <Container fluid={true}>
             <Navbar bg="light" variant="light">
-            <Navbar.Brand href="#home">Recommend.it</Navbar.Brand>
+            <Navbar.Brand>
+                <NavLink exact activeClassName="active" to="/" style={{textDecoration: 'none', color:'black'}}>
+                    Recommend.it
+                </NavLink>
+            </Navbar.Brand>
             <Nav className="mr-auto">
                 <Nav.Link>
                     <NavLink exact activeClassName="active" to="/">
                         Home
-                    </NavLink>
-                </Nav.Link>
-                <Nav.Link>
-                    <NavLink exact activeClassName="active" to="/about">
-                        About
                     </NavLink>
                 </Nav.Link>
             </Nav>
