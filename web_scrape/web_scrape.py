@@ -59,6 +59,9 @@ url = "http://localhost:8000/gmu-clubs.html"
 #url = "http://localhost:8000/example.html"
 
 raw_html = simple_get(url)
+#raw_html = str(raw_html).replace('<br />', ' ')
+#print(raw_html)
+#quit()
 html = BeautifulSoup(raw_html, 'html.parser')
 
 clubs = []
@@ -93,6 +96,16 @@ for p in html.select('li > div > div > div > div > div'):
                         desc.append("")
                         desc = desc[1]
                         desc = ' '.join(desc.split('\r\n\t\t\t\t\t\t\t\nMembership Benefits', 1))
+                        desc = desc.replace('\u2022\t', ' ')
+                        desc = desc.replace('\n\r\n\t\t\t\t\t\t\t\t\t', ' ')
+                        #desc = desc.replace('\u00e2\u20ac\u201c ', '')
+                        #desc = desc.replace('\u00a0', '')
+                        #desc = desc.replace('\u00e2\u20ac\u2122', "'")
+                        #desc = desc.replace('\u201c', '"')
+                        #desc = desc.replace('\u201d', '"')
+                        #desc = desc.replace('\u2019', "'")
+                        #desc = desc.replace('\u2013', '-')
+                        #desc = desc.replace('\u2022', '.')
                         clubs[i]['desc'] = desc
                         #print("club", child['id'], child['id'][5:])
                         club_id = child['id'][5:]
