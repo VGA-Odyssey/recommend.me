@@ -36,9 +36,7 @@ router.get('/predict/:id', (req, res, next) => {
   .then(recommended => {
     res.json(recommended)
   })
-  .catch(error => console.log(error));
-
-    
+  .catch(error => console.log(error));    
 });
 
 router.get('/tags', function(req, res, next) {

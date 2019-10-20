@@ -12,9 +12,6 @@ const routing = (
         <Header /> 
         <Switch>
           <Route exact path="/" component={App} />
-          {/* <Route path="/users" component={Users} />
-          <Route path="/contact" component={Contact} />
-          <Route component={Notfound} /> */}
         </Switch>
       </div>
     </Router>
